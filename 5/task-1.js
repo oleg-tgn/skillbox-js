@@ -1,15 +1,8 @@
 let filterList = function(baseList, removeList) {
     let newList = [];
 
-    for (let baseItem of baseList) {
-        let clear = true;
-        for (let removeItem of removeList) {
-            if (baseItem == removeItem) {
-                clear = false;
-                break;
-            }            
-        }
-        if (clear) {
+    for (let baseItem of baseList) {                
+        if (!removeList.includes(baseItem)) {
             newList.push(baseItem);
         }
     }
