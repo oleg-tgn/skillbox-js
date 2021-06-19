@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="main.js"></script>
+</head>
+<body>
+
+  <script>
+    let selectArr = [
+      {value: '0', label: 'Азов' },
+      {value: '1', label: 'Ростов-на-Дону' },
+      {value: '2', label: 'Таганрог' },
+    ];
+
+    let selectArr2 = [ 'Азов', 'Ростов-на-Дону', 'Таганрог' ];
+    let selectArr3 = { 'Azov': 'Азов', 'Rostov': 'Ростов-на-Дону', 'Taganrog': 'Таганрог' };
+
+    let newSelect = createSelectFilter(selectArr3, 1);
+
+    document.body.append(newSelect);
+  </script>
+</body>
+</html>
