@@ -14,6 +14,7 @@
   });
 
   document.addEventListener('DOMContentLoaded', () => {
-
+    document.body.append(textInput);
+    document.body.append(display);
   });
 })();
