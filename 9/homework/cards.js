@@ -1,10 +1,11 @@
 (() => {
+  let lastButton = null;
+
   const app = {
     map: [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8],
     btnList: null,
     gameContainer: null,
     firstClicked: null,
-    lastClicked: null,
 
     shuffle() {
       var j, temp;
@@ -29,62 +30,57 @@
         let button = document.createElement('button');
         button.classList.add('btn', 'btn-secondary', 'btn-lg', 'map__btn');
         button.id = item;
-        //button.textContent = item;
-        button.addEventListener('click', function() { this.clickBtn() });
+
+        button.addEventListener('click',  () => this.clickBtn() );
 
         btnList.append(button);
-
       }     
     },    
 
-    clickBtn() {
-      console.log("CLICK");
-      const button = e.target;
+    clickBtn() {      
+      const button = event.target;
+      
       const btnStatus = {
-        closeBtn(button) {
-          if (button) {
-            button.classList.remove('btn-primary', 'open');
-            button.classList.add('btn-secondary');
-            button.textContent = '';
+        closeBtn(btn) {
+          if (btn) {
+            btn.classList.remove('btn-primary', 'open');
+            btn.classList.add('btn-secondary');
+            btn.textContent = '';
           }
         },
     
-        openBtn(button) {
-          if (button) {
-            button.classList.remove('btn-secondary');
-            button.classList.add('btn-primary', 'open');
-            button.textContent = button.id;
+        openBtn(btn) {
+          if (btn) {
+            btn.classList.remove('btn-secondary');
+            btn.classList.add('btn-primary', 'open');
+            btn.textContent = button.id;
           }
         },
     
-        successBtn(button) {
-          if (button) {
-            button.classList.remove('btn-primary');
-            button.classList.add('btn-success', 'open');
-            button.textContent = button.id;
+        successBtn(btn) {
+          if (btn) {
+            btn.classList.remove('btn-primary');
+            btn.classList.add('btn-success', 'open');
+            btn.textContent = btn.id;
           }
         },
       }
 
       if (!button.classList.contains('open')) {
         btnStatus.openBtn(button);
-        // console.log( this.lastClicked.id );
-        // console.log( button.id );
         
-        if (this.lastClicked && this.lastClicked.id) {
-          console.log( this.lastClicked.id );
-          console.log( button.id );
-          if (this.lastClicked.id == button.id) {
+        if (lastButton != null) {
+          if (lastButton.id == button.id) {
             btnStatus.successBtn(button);
-            btnStatus.successBtn(this.lastClicked);
-            this.lastClicked = null;
+            btnStatus.successBtn(lastButton);
+            lastButton = null;
           } else {
-            btnStatus.closeBtn(this.lastClicked);
-            this.lastClicked = button;
+            btnStatus.closeBtn(lastButton);
+            lastButton = button;
           }
         } else {
-          btnStatus.closeBtn(this.lastClicked);
-          this.lastClicked = button;
+          btnStatus.closeBtn(lastButton);
+          lastButton = button;
         }
       }
     },
