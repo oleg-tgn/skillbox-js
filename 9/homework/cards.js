@@ -5,6 +5,10 @@
     gameContainer: null,
     firstClicked: null,
     lastButtons: [],
+    title: null,
+    groupSize: null,
+    inputSize: null,
+    btnSize: null,
     size: 4,
 
     shuffle() {
@@ -18,14 +22,46 @@
       }
     },
 
+    createGame(gameContainerId = 'game') {
+      this.gameContainer = document.getElementById(gameContainerId);
+     
+      this.title = document.createElement('h1');     
+      this.title.textContent = `Игра "пары"`;
+      this.title.classList.add('h1');
+
+      this.groupSize = document.createElement('div');
+      this.groupSize.classList.add('input-group', 'game__input');
+
+      this.inputSize = document.createElement('input');
+      this.inputSize.classList.add('form-control');
+      this.inputSize.placeholder = 'Размер поля от 2 до 10';
+
+      this.btnSize = document.createElement('button');
+      this.btnSize.classList.add('btn', 'btn-outline-secondary');
+      this.btnSize.textContent = `Создать`;
+
+      this.gameContainer.append(this.title);
+      this.gameContainer.append(this.groupSize);
+      this.groupSize.append(this.inputSize);
+      this.groupSize.append(this.btnSize);
+
+      this.btnSize.addEventListener('click', this.setBtnSize.bind(this))
+    },
+
+    setBtnSize() {
+      this.size = this.inputSize.value ? this.inputSize.value : 4;
+
+      this.startGame();
+    },
+
     createButtons() {
-      btnList = this.btnList;
+      if (this.btnList) this.btnList.remove();
 
-      btnList = document.createElement('div');
-      this.gameContainer.append(btnList);
+      this.btnList = document.createElement('div');
+      this.gameContainer.append( this.btnList );
 
-      btnList.classList.add('map');
-      btnList.classList.add('map--' + this.size);
+      this.btnList.classList.add('map');
+      this.btnList.classList.add('map--' + this.size);
 
       for (const item of this.map) {
         let button = document.createElement('button');
@@ -34,7 +70,7 @@
 
         button.addEventListener('click', this.clickBtn.bind(this) );
 
-        btnList.append(button);
+        this.btnList.append(button);
       }     
     },    
 
@@ -106,18 +142,14 @@
       }      
     },
 
-    startGame(gameContainerId = 'game') {
-      this.gameContainer = document.getElementById(gameContainerId);
-      this.size = 6;
-
+    startGame() {
       this.generateMap();
       this.shuffle();
       this.createButtons();
     }
-
   };
 
   document.addEventListener('DOMContentLoaded', function() {
-    app.startGame();
+    app.createGame();
   });
 })()
