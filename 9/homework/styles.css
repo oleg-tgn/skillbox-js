@@ -1,9 +1,13 @@
 .map {
   display: flex;
   flex-wrap: wrap;
-  width: 240px;
-  height: 240px;
 }
+
+.map--2 { width: calc(60px * 2); height: calc(60px * 2); }
+.map--4 { width: calc(60px * 4); height: calc(60px * 4); }
+.map--6 { width: calc(60px * 6); height: calc(60px * 6); }
+.map--8 { width: calc(60px * 8); height: calc(60px * 8); }
+.map--10 { width: calc(60px * 10); height: calc(60px * 10); }
 
 .map__btn {
   width: 50px;

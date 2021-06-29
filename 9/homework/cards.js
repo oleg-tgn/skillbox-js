@@ -1,16 +1,16 @@
 (() => {
-  let lastButton = null;
-
   const app = {
-    map: [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8],
+    map: [],
     btnList: null,
     gameContainer: null,
     firstClicked: null,
+    lastButtons: [],
+    size: 4,
 
     shuffle() {
-      var j, temp;
+      let j, temp;
       let arr = this.map;
-      for(var i = arr.length - 1; i > 0; i--){
+      for(let i = arr.length - 1; i > 0; i--){
         j = Math.floor(Math.random()*(i + 1));
         temp = arr[j];
         arr[j] = arr[i];
@@ -25,21 +25,21 @@
       this.gameContainer.append(btnList);
 
       btnList.classList.add('map');
+      btnList.classList.add('map--' + this.size);
 
       for (const item of this.map) {
         let button = document.createElement('button');
         button.classList.add('btn', 'btn-secondary', 'btn-lg', 'map__btn');
         button.id = item;
 
-        button.addEventListener('click',  () => this.clickBtn() );
+        button.addEventListener('click', this.clickBtn.bind(this) );
 
         btnList.append(button);
       }     
     },    
 
-    clickBtn() {      
-      const button = event.target;
-      
+    clickBtn(event) {
+      const button = event.target; 
       const btnStatus = {
         closeBtn(btn) {
           if (btn) {
@@ -69,27 +69,49 @@
       if (!button.classList.contains('open')) {
         btnStatus.openBtn(button);
         
-        if (lastButton != null) {
-          if (lastButton.id == button.id) {
+        if (this.lastButtons.length == 2) {
+          btnStatus.closeBtn(this.lastButtons[0]);
+          btnStatus.closeBtn(this.lastButtons[1]);
+          this.lastButtons = [];
+          this.lastButtons.push(event.target);
+        } 
+        else if (this.lastButtons.length == 1 ) {
+          if (this.lastButtons[0].id == button.id) {
             btnStatus.successBtn(button);
-            btnStatus.successBtn(lastButton);
-            lastButton = null;
+            btnStatus.successBtn(this.lastButtons[0]);
+            this.lastButtons = [];
           } else {
-            btnStatus.closeBtn(lastButton);
-            lastButton = button;
-          }
+            this.lastButtons.push(event.target);
+          } 
         } else {
-          btnStatus.closeBtn(lastButton);
-          lastButton = button;
+          this.lastButtons.push(event.target);
         }
       }
     },
 
+    generateMap() {
+      length = this.size;
+      if (length >=2 && length <= 10 && length % 2 == 0) {
+        this.map = [];
+        let num = 1;
+        length *= length;
+        for (let i = 0; i < length; i += 2) {
+          this.map[i] = this.map[i + 1] = num;
+          num++;
+        }
+        
+      } else {
+        this.map = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8];
+        this.size = 4;
+      }      
+    },
+
     startGame(gameContainerId = 'game') {
       this.gameContainer = document.getElementById(gameContainerId);
+      this.size = 6;
 
+      this.generateMap();
       this.shuffle();
-      console.log(this.map);
       this.createButtons();
     }
 
