@@ -157,6 +157,7 @@
     },
 
     createTimer() {
+      this.seconds =  this.baseSeconds;
       if ( this.timerLabel == null) {
         this.timerLabel = document.createElement('div');
         this.timerLabel.classList.add('timer');
@@ -167,16 +168,20 @@
       this.timer = setInterval(() => {
         this.seconds--;
           this.timerLabel.textContent = 'Timer: ' + this.seconds;
-          if (this.seconds == 0) {
-              clearInterval(this.timer);
-              this.stopGame = true;
-              this.seconds =  this.baseSeconds;
+          if (this.seconds == 0) {                      
               this.finishGame();
           }
       }, 1000);
     },
 
+    stopTimer() {
+      clearInterval(this.timer);
+      this.stopGame = true;  
+    },
+
     finishGame() {
+      this.stopTimer();
+
       this.buttonRestart = document.createElement('button');
       this.buttonRestart.textContent = 'Сыграть ещё раз';
       this.buttonRestart.classList.add('btn', 'btn-success', 'mt-4');
@@ -190,7 +195,7 @@
     },
 
     startGame() {
-      this.stopGame = false;
+      this.stopTimer();
       if (this.buttonRestart != null) this.buttonRestart.remove();
       this.generateMap();
       this.shuffle();
