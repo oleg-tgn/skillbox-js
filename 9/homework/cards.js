@@ -10,6 +10,12 @@
     inputSize: null,
     btnSize: null,
     size: 4,
+    opened: 0,
+    buttonRestart: null,
+    timerLabel: null,
+    stopGame: false,
+    baseSeconds: 10,
+    seconds: 10,
 
     shuffle() {
       let j, temp;
@@ -75,6 +81,7 @@
     },    
 
     clickBtn(event) {
+      if (this.stopGame) return;
       const button = event.target; 
       const btnStatus = {
         closeBtn(btn) {
@@ -116,6 +123,13 @@
             btnStatus.successBtn(button);
             btnStatus.successBtn(this.lastButtons[0]);
             this.lastButtons = [];
+            this.opened += 2;
+
+            if (this.opened == this.size * this.size) {
+              this.stopGame = true;
+              this.finishGame();
+              clearInterval(this.timer);
+            }
           } else {
             this.lastButtons.push(event.target);
           } 
@@ -142,11 +156,48 @@
       }      
     },
 
+    createTimer() {
+      if ( this.timerLabel == null) {
+        this.timerLabel = document.createElement('div');
+        this.timerLabel.classList.add('timer');
+      }
+      this.timerLabel.textContent = 'Timer: ' + this.seconds;
+
+      this.gameContainer.append(this.timerLabel);   
+      this.timer = setInterval(() => {
+        this.seconds--;
+          this.timerLabel.textContent = 'Timer: ' + this.seconds;
+          if (this.seconds == 0) {
+              clearInterval(this.timer);
+              this.stopGame = true;
+              this.seconds =  this.baseSeconds;
+              this.finishGame();
+          }
+      }, 1000);
+    },
+
+    finishGame() {
+      this.buttonRestart = document.createElement('button');
+      this.buttonRestart.textContent = 'Сыграть ещё раз';
+      this.buttonRestart.classList.add('btn', 'btn-success', 'mt-4');
+      this.gameContainer.append(this.buttonRestart);
+
+      let resultLabel = document.createElement('div');
+      resultLabel.textContent = `Ваш результат ${this.opened / 2} из ${this.size * this.size / 2} пар за ${this.baseSeconds - this.seconds} секунд`;
+      this.timerLabel.append(resultLabel);
+
+      this.buttonRestart.addEventListener('click', this.startGame.bind(this));
+    },
+
     startGame() {
+      this.stopGame = false;
+      if (this.buttonRestart != null) this.buttonRestart.remove();
       this.generateMap();
       this.shuffle();
       this.createButtons();
+      this.createTimer();
     }
+
   };
 
   document.addEventListener('DOMContentLoaded', function() {
