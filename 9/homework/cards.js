@@ -14,8 +14,8 @@
     buttonRestart: null,
     timerLabel: null,
     stopGame: false,
-    baseSeconds: 10,
-    seconds: 10,
+    baseSeconds: 60,
+    seconds: 60,
 
     shuffle() {
       let j, temp;
@@ -81,7 +81,7 @@
     },    
 
     clickBtn(event) {
-      if (this.stopGame) return;
+      console.log(this.stopGame);
       const button = event.target; 
       const btnStatus = {
         closeBtn(btn) {
@@ -125,10 +125,8 @@
             this.lastButtons = [];
             this.opened += 2;
 
-            if (this.opened == this.size * this.size) {
-              this.stopGame = true;
+            if (this.opened == this.size * this.size) {            
               this.finishGame();
-              clearInterval(this.timer);
             }
           } else {
             this.lastButtons.push(event.target);
@@ -176,10 +174,10 @@
 
     stopTimer() {
       clearInterval(this.timer);
-      this.stopGame = true;  
     },
 
     finishGame() {
+      this.stopGame = true;
       this.stopTimer();
 
       this.buttonRestart = document.createElement('button');
@@ -188,19 +186,24 @@
       this.gameContainer.append(this.buttonRestart);
 
       let resultLabel = document.createElement('div');
-      resultLabel.textContent = `Ваш результат ${this.opened / 2} из ${this.size * this.size / 2} пар за ${this.baseSeconds - this.seconds} секунд`;
+      resultLabel.textContent = `Ваш результат ${this.opened / 2} из ${this.size * this.size / 2} пар за время ${this.baseSeconds - this.seconds} сек.`;
       this.timerLabel.append(resultLabel);
 
       this.buttonRestart.addEventListener('click', this.startGame.bind(this));
     },
 
     startGame() {
-      this.stopTimer();
+      this.stopGame = false;  
+      this.opened = 0;
+      
       if (this.buttonRestart != null) this.buttonRestart.remove();
       this.generateMap();
       this.shuffle();
       this.createButtons();
+
+      this.stopTimer();
       this.createTimer();
+      console.log("START GAME ", this.stopGame);
     }
 
   };
